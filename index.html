@@ -3,82 +3,89 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ментальный счёт — уровни, XP и тренажёр</title>
-<meta name="description" content="Тренажёр устного счёта с уровнями, опытом, сериями, уникальной базой 2×2, смешанными режимами и историей. Сложение, вычитание, умножение, деление.">
+<title>Ментальный счёт — уровни, XP и уникальные базы</title>
+<meta name="description" content="Тренажёр устного счёта с уровнями и XP, уникальными базами 2×2, 2×2×2, 3×3, 3×3×3, сериями, таймерами, историей и входом (Google/Email).">
 <style>
   :root{
-    --bg:#0f172a; --card:#ffffff; --muted:#64748b; --border:#e2e8f0; --accent:#2563eb; --good:#16a34a; --bad:#dc2626; --warn:#f59e0b;
-    --radius:16px; --shadow:0 12px 40px rgba(2,6,23,.18);
+    --bg:#0e1224; --card:#121a2f; --text:#e6eefc; --muted:#9fb0c9; --border:#1e2a45; --accent:#5b8cff;
+    --good:#22c55e; --bad:#ef4444; --ring:rgba(91,140,255,.35);
+    --radius:18px; --shadow:0 18px 50px rgba(4,10,28,.35); --surface:#0b1327;
+  }
+  body.light{
+    --bg:#f5f7ff; --card:#ffffff; --text:#0f172a; --muted:#64748b; --border:#e6edf6; --accent:#2563eb;
+    --good:#16a34a; --bad:#dc2626; --ring:rgba(37,99,235,.25); --surface:#eef3fb; --shadow:0 14px 36px rgba(2,6,23,.12);
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; background:var(--bg); color:#0b1220; display:grid; place-items:start center; padding:24px}
-  .app{width:100%; max-width:1220px; display:grid; gap:16px}
-
-  .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
-  .panel{padding:18px 18px 10px}
+  body{margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    color:var(--text); background:radial-gradient(1200px 600px at -10% -10%, #182347 0%, var(--bg) 55%) fixed;
+    transition:background .35s,color .25s; display:grid; place-items:start center; padding:24px}
+  .app{width:100%; max-width:1240px; display:grid; gap:16px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(0,0,0,.03)), var(--card);
+    border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+  .panel{padding:18px 18px 12px}
   .quiz{padding:20px; display:grid; gap:14px}
+  .row{display:grid; gap:16px}
+  @media (min-width:980px){ .row{grid-template-columns:1.6fr 1fr} }
 
-  .row{display:grid; gap:12px}
-  @media (min-width:980px){
-    .row{grid-template-columns: 1.6fr 1fr;} /* тренировка шире и первая */
-  }
-
-  /* Шапка уровней */
-  .level-header{display:flex; gap:16px; align-items:center; padding:16px 18px; background:linear-gradient(135deg,#1d4ed8,#06b6d4); color:#fff; border-radius:var(--radius)}
-  .avatar{width:72px; height:72px; border-radius:999px; background:#0ea5e9; display:grid; place-items:center; font-weight:800; font-size:28px; box-shadow:inset 0 0 0 4px rgba(255,255,255,.25); overflow:hidden}
+  /* Header */
+  .level-header{display:flex; gap:16px; align-items:center; padding:16px 18px;
+    background:linear-gradient(135deg, #5b8cff, #00d4ff); color:#fff; border-radius:var(--radius);
+    box-shadow:0 18px 40px rgba(50,120,255,.25)}
+  .avatar{width:76px; height:76px; border-radius:999px; background:#0ea5e9; display:grid; place-items:center;
+    font-weight:800; font-size:28px; overflow:hidden; box-shadow:inset 0 0 0 6px rgba(255,255,255,.25)}
   .avatar img{width:100%; height:100%; object-fit:cover}
-  .level-meta{flex:1; display:grid; gap:6px}
+  .level-meta{flex:1; display:grid; gap:8px}
   .level-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px}
-  .level-top .rank{font-size:14px; opacity:.9}
-  .level-top .lvl{font-size:20px; font-weight:700}
+  .level-top .lvl{font-size:22px; font-weight:800; letter-spacing:.3px}
+  .level-top .rank{opacity:.92; font-size:14px}
+  .level-note{font-size:13px; opacity:.96}
   .level-bar{position:relative; height:12px; background:rgba(255,255,255,.35); border-radius:999px; overflow:hidden}
-  .level-bar > i{position:absolute; inset:0; width:0%; background:linear-gradient(90deg,#a78bfa,#22c55e)}
-  .level-note{font-size:13px; opacity:.95}
+  .level-bar>i{position:absolute; inset:0; width:0%; background:linear-gradient(90deg,#c084fc,#22c55e); transition:width .45s ease}
 
-  /* Правая часть (тренировка) */
-  .task{font-size:34px; letter-spacing:.3px; text-align:center}
-  .stats{display:flex; gap:12px; flex-wrap:wrap; font-size:14px; color:#334155}
-  .stat{padding:10px 12px; background:#f1f5f9; border:1px solid var(--border); border-radius:12px}
-  .answer-block{display:grid; gap:8px}
-  label{font-size:13px; color:#334155; display:block; margin-bottom:4px}
-  select, input[type="number"], input[type="text"], button, .toggle{width:100%}
-  select, input[type="number"], input[type="text"]{padding:10px 12px; font-size:16px; border:1px solid var(--border); border-radius:12px; outline:none}
-  select:focus, input:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(37,99,235,.15)}
-  .toggle{display:flex; gap:8px; flex-wrap:wrap}
-  .toggle button{flex:1}
-  .btn{padding:12px 14px; font-size:16px; border-radius:12px; border:1px solid var(--border); background:#f8fafc; cursor:pointer}
-  .btn.primary{background:var(--accent); color:#fff; border-color:transparent}
-  .btn.ghost{background:#fff}
-  .btn.warn{background:var(--warn); color:#111827; border-color:transparent}
-  .btn:disabled{opacity:.6; cursor:not-allowed}
-  .feedback{min-height:26px; font-size:15px}
+  /* Quiz */
+  .task{font-size:36px; letter-spacing:.3px; text-align:center}
+  .stats{display:flex; gap:12px; flex-wrap:wrap; font-size:14px; color:var(--muted)}
+  .stat{padding:10px 12px; background:var(--surface); border:1px solid var(--border); color:var(--text); border-radius:14px}
+  label{font-size:13px; color:var(--muted); display:block; margin-bottom:2px}
+  input[type="number"],select{width:100%; padding:12px 14px; font-size:17px; border:1px solid var(--border); border-radius:14px; outline:none;
+    background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.02)), var(--card); color:var(--text)}
+  input::placeholder{color:rgba(127,148,178,.7)}
+  input:focus,select:focus{border-color:var(--accent); box-shadow:0 0 0 6px var(--ring)}
+  .btn{padding:12px 16px; font-size:16px; border-radius:14px; border:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.04)), var(--card); color:var(--text); cursor:pointer}
+  .btn.primary{background:linear-gradient(135deg,#5b8cff,#22c55e); color:#fff; border-color:transparent}
+  .btn.small{padding:8px 10px; font-size:14px}
+  .btn.block{width:100%}
+  .divider{height:1px; background:var(--border); margin:10px 0}
+  .pill{padding:7px 12px; background:var(--surface); border:1px solid var(--border); border-radius:999px; font-size:13px; color:var(--text)}
+  .rowmini{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+  .feedback{min-height:28px; font-size:15px}
   .feedback.good{color:var(--good)}
   .feedback.bad{color:var(--bad)}
-  .divider{height:1px; background:var(--border); margin:6px 0}
-  .flex{display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap}
-  .timerbig{font-variant-numeric:tabular-nums; font-size:22px; font-weight:700; color:#0f172a; background:#f1f5f9; border:1px solid var(--border); border-radius:12px; padding:8px 12px; text-align:center}
-  .timerbar{position:relative; height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden}
-  .timerbar > i{position:absolute; left:0; top:0; bottom:0; width:0%; background:linear-gradient(90deg,#16a34a,#22c55e);}
-  .subrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
-
-  /* Левая часть (настройки) */
-  .controls{display:grid; gap:12px}
-  details{background:#f8fafc; border:1px solid var(--border); border-radius:12px; padding:12px}
-  summary{cursor:pointer}
-  .hint{font-size:13px; color:#64748b}
+  details{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px}
+  summary{cursor:pointer; color:var(--text)}
+  .hint{font-size:13px; color:var(--muted)}
   table{width:100%; border-collapse:collapse}
-  th,td{border-top:1px solid var(--border); padding:8px 10px; text-align:left; font-size:14px}
-  th{background:#f8fafc}
-  .nowrap{white-space:nowrap}
-  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+  th,td{border-top:1px solid var(--border); padding:9px 10px; text-align:left; font-size:14px}
+  th{background:var(--surface); color:var(--muted)}
+
+  /* Timer bar */
+  .timerwrap{margin:2px 0 8px}
+  .timerbar{position:relative; height:10px; background:#1e2a45; border-radius:999px; overflow:hidden}
+  .timerbar>i{position:absolute; left:0; top:0; bottom:0; width:0%; background:linear-gradient(90deg,#22c55e,#ef4444)}
+
+  /* Actionbar (Start/Pause/Stop в один ряд) */
+  .actionbar{display:flex; gap:10px; margin-top:10px}
+  .actionbar .btn{flex:1}
+  .actionbar .btn.primary{background:linear-gradient(135deg,#5b8cff,#5b8cff)} /* один цвет */
 </style>
 </head>
-<body>
+<body class="dark">
 <div class="app">
 
-  <!-- Шапка уровней -->
-  <section class="card level-header" id="hdr">
+  <!-- HEADER -->
+  <section class="card level-header">
     <div class="avatar" id="avatar">E</div>
     <div class="level-meta">
       <div class="level-top">
@@ -87,105 +94,93 @@
       </div>
       <div class="level-bar"><i id="lvlbar"></i></div>
     </div>
+    <button id="theme" class="btn small" title="Переключить тему">🌙 Тема</button>
   </section>
 
   <div class="row">
-    <!-- Правая (основная) -->
+    <!-- RIGHT: QUIZ -->
     <section class="card quiz" aria-live="polite">
-      <!-- Верхний таймер и управление -->
-      <div class="flex" style="gap:10px; align-items:flex-end">
-        <div class="subrow" style="flex:1">
-          <div class="timerbig" id="timerDigits" title="Осталось">00:00</div>
-          <div class="timerbig" id="elapsedDigits" title="Прошло">00:00</div>
-          <div style="min-width:120px">
-            <label for="timelimit" style="margin-bottom:2px">Таймер (сек)</label>
-            <input id="timelimit" type="number" min="0" step="5" value="60" placeholder="0 = без таймера">
-          </div>
-          <div class="timerbig" title="Осталось уникальных 2×2">2×2: <span id="baseLeftBig">—</span></div>
-        </div>
-        <div class="flex" style="gap:8px">
-          <button class="btn primary" id="start">Старт</button>
-          <button class="btn" id="pause">Пауза</button>
-          <button class="btn" id="stop">Стоп</button>
-          <button class="btn" id="next" title="Пробел / Ctrl+Enter">Следующая</button>
-        </div>
+      <div class="rowmini">
+        <span class="pill">LIVE: <b id="live">00:00</b></span>
+        <span class="pill">Таймер: <b id="gameleft">—</b></span>
+        <span class="pill">2×2 осталось: <b id="left_22">—</b></span>
+        <span class="pill">2×2×2 осталось: <b id="left_222">—</b></span>
+        <span class="pill">3×3 осталось: <b id="left_33">—</b></span>
+        <span class="pill">3×3×3 осталось: <b id="left_333">—</b></span>
       </div>
-      <div class="timerbar" aria-hidden="true"><i id="bar"></i></div>
+      <div class="timerwrap" id="timerwrap" style="display:none">
+        <div class="timerbar"><i id="bar"></i></div>
+      </div>
 
       <div class="stats">
         <div class="stat">Серия: <b id="streak">0</b></div>
         <div class="stat">Лучшая: <b id="best">0</b></div>
         <div class="stat">Всего: <b id="total">0</b></div>
         <div class="stat">Верных: <b id="correct">0</b></div>
-        <div class="stat">Точность: <b id="acc">0%</b></div>
+        <div class="stat nowrap">Точность: <b id="acc">0%</b></div>
         <div class="stat nowrap">⌀ сек/зад: <b id="avg">0.0</b></div>
         <div class="stat nowrap">Последнее: <b id="lastTime">—</b></div>
-        <div class="stat" style="min-width:160px">Осталось: <b id="timeleft">—</b></div>
       </div>
 
       <div class="task mono" id="task">Нажми «Старт», чтобы начать.</div>
 
-      <div class="answer-block">
-        <label for="answer">Ответ:</label>
+      <div>
+        <label for="answer">Ответ</label>
         <input id="answer" type="number" inputmode="decimal" placeholder="Введи ответ" />
-        <button class="btn primary" id="check" title="Enter">Проверить</button>
+        <button class="btn primary block" id="check" title="Enter">Проверить</button>
+
+        <button class="btn block" id="next" title="Пробел">Следующая</button>
+
+        <!-- Быстрый ввод лимита прямо тут -->
+        <div class="rowmini" style="margin-top:6px">
+          <input id="quickLimit" type="number" min="0" step="5" placeholder="Лимит в секундах" style="max-width:220px">
+          <label><input id="unlimited" type="checkbox"> Без лимита (марафон)</label>
+        </div>
+
+        <!-- Старт/Пауза/Стоп: один ряд, один цвет -->
+        <div class="actionbar">
+          <button class="btn primary" id="start">Старт</button>
+          <button class="btn primary" id="pause">Пауза</button>
+          <button class="btn primary" id="stop">Стоп</button>
+        </div>
       </div>
 
       <div class="feedback" id="feedback"></div>
 
       <details id="work" open>
         <summary>Показать/скрыть разбор для счёта в уме</summary>
-        <div id="explain" class="hint">Здесь появится разбор: разложение по десяткам/единицам, удобные пары, деление с целым результатом и т.д.</div>
+        <div id="explain" class="hint">Здесь будут подсказки по разложению и приёмам счёта.</div>
       </details>
+
+      <div class="hint">Хоткеи: <b>Enter</b> — проверить, <b>Пробел</b> — следующая.</div>
     </section>
 
-    <!-- Левая (настройки + УТИЛИТЫ ПЕРЕНЕСЕНЫ СЮДА) -->
+    <!-- LEFT: настройки/базы/утилиты -->
     <section class="card panel">
       <div class="controls">
-        <!-- Google Sign-In -->
-        <div id="authBox">
-          <div id="g_id_onload"
-               data-client_id="YOUR_GOOGLE_CLIENT_ID"
-               data-context="signin"
-               data-callback="onGoogleSignIn"
-               data-auto_prompt="false"></div>
-          <div class="g_id_signin"
-               data-type="standard"
-               data-shape="rectangular"
-               data-theme="outline"
-               data-text="signin_with"
-               data-size="large"
-               data-logo_alignment="left"></div>
-          <div id="signed" style="display:none; font-size:14px; color:#334155; margin-top:6px">
-            Вошёл как <b id="who"></b>. <button class="btn" id="signout" style="margin-top:6px">Выйти</button>
-          </div>
-        </div>
-
         <div class="toggle" role="group" aria-label="Режим">
-          <button class="btn ghost" data-mode="add" id="mode-add">Сложение</button>
-          <button class="btn ghost" data-mode="sub" id="mode-sub">Вычитание</button>
-          <button class="btn ghost" data-mode="mul" id="mode-mul">Умножение</button>
-          <button class="btn ghost" data-mode="div" id="mode-div">Деление</button>
-          <button class="btn ghost" data-mode="mix" id="mode-mix">Смешанный</button>
-          <button class="btn ghost" data-mode="custom" id="mode-custom">Своя задача</button>
+          <button class="btn" data-mode="add" id="mode-add">Сложение</button>
+          <button class="btn" data-mode="sub" id="mode-sub">Вычитание</button>
+          <button class="btn" data-mode="mul" id="mode-mul">Умножение</button>
+          <button class="btn" data-mode="div" id="mode-div">Деление</button>
+          <button class="btn" data-mode="mix" id="mode-mix">Смешанный</button>
+          <button class="btn" data-mode="custom" id="mode-custom">Своя задача</button>
         </div>
 
         <div id="custom-box" style="display:none">
           <label>Своя задача</label>
-          <div class="flex" style="gap:8px">
-            <input id="c-a" type="number" placeholder="23" style="max-width:130px">
-            <select id="c-op1" style="max-width:120px">
+          <div class="rowmini">
+            <input id="c-a" type="number" placeholder="23" style="max-width:120px">
+            <select id="c-op1" style="max-width:110px">
               <option value="+">+</option><option value="-">−</option><option value="*">×</option><option value="/">÷</option>
             </select>
-            <input id="c-b" type="number" placeholder="45" style="max-width:130px">
-            <select id="c-op2" style="max-width:120px">
+            <input id="c-b" type="number" placeholder="45" style="max-width:120px">
+            <select id="c-op2" style="max-width:110px">
               <option value="none">—</option><option value="+">+</option><option value="-">−</option><option value="*">×</option><option value="/">÷</option>
             </select>
-            <input id="c-c" type="number" placeholder="55" style="max-width:130px">
-          </div>
-          <div class="flex" style="gap:8px; margin-top:8px">
-            <input id="c-result" type="number" inputmode="decimal" placeholder="Правильный ответ (необязательно)" style="max-width:220px">
-            <button class="btn" id="c-use">Сформировать</button>
+            <input id="c-c" type="number" placeholder="55" style="max-width:120px">
+            <input id="c-result" type="number" inputmode="decimal" placeholder="Правильный ответ (опц.)" style="max-width:180px">
+            <button class="btn small" id="c-use">Сформировать</button>
           </div>
         </div>
 
@@ -198,33 +193,35 @@
           </select>
         </div>
 
-        <div id="mix-ops" style="display:none">
-          <label>Какие операции включать в «Смешанный»</label>
-          <div class="flex" style="gap:8px">
-            <label><input type="checkbox" id="m-add" checked> Сложение</label>
-            <label><input type="checkbox" id="m-sub" checked> Вычитание</label>
-            <label><input type="checkbox" id="m-mul" checked> Умножение</label>
-            <label><input type="checkbox" id="m-div" checked> Деление</label>
-          </div>
-        </div>
-
         <div>
-          <label>База уникальных 2×2</label>
-          <div class="flex">
-            <button class="btn" id="useBase">Тренажёр 2×2 (уникальные)</button>
-            <button class="btn" id="resetBase">Сбросить базу</button>
-          </div>
-          <div class="hint">Без повторов до исчерпания: <span id="baseLeft">—</span> осталось.</div>
+          <label>Третье число (для умножения)</label>
+          <select id="third">
+            <option value="off">Выключено</option>
+            <option value="auto">Авто на сложном</option>
+            <option value="on">Всегда</option>
+          </select>
+          <div class="hint">Пример: 24 × 37 × 55 (2×2×2) или 123 × 456 × 789 (3×3×3).</div>
         </div>
 
-        <!-- Утилиты (перенесены из правого блока) -->
         <details open>
+          <summary>Уникальные базы и счётчики</summary>
+          <div class="controls" style="margin-top:6px">
+            <label><input type="checkbox" id="u22" checked> Использовать уникальную 2×2</label>
+            <label><input type="checkbox" id="u222"> Использовать уникальную 2×2×2</label>
+            <label><input type="checkbox" id="u33"> Использовать уникальную 3×3</label>
+            <label><input type="checkbox" id="u333"> Использовать уникальную 3×3×3</label>
+            <div class="hint">Осталось: 2×2 — <b id="left_22_s">—</b>, 2×2×2 — <b id="left_222_s">—</b>, 3×3 — <b id="left_33_s">—</b>, 3×3×3 — <b id="left_333_s">—</b>.</div>
+            <button class="btn small" id="resetBases">Сбросить все базы</button>
+          </div>
+        </details>
+
+        <details>
           <summary>Утилиты</summary>
           <div class="controls" style="margin-top:6px">
-            <button class="btn" id="hint">Подсказка</button>
-            <button class="btn" id="clear">Очистить поле</button>
-            <button class="btn" id="exportCsv">Экспорт истории (CSV)</button>
-            <button class="btn" id="clearHistory">Очистить историю</button>
+            <button class="btn small" id="hint">Подсказка</button>
+            <button class="btn small" id="clear">Очистить поле</button>
+            <button class="btn small" id="exportCsv">Экспорт истории (CSV)</button>
+            <button class="btn small" id="clearHistory">Очистить историю</button>
           </div>
         </details>
       </div>
@@ -233,439 +230,394 @@
 
   <section class="card panel">
     <h3 style="margin:0 0 10px">История сессии</h3>
-    <div class="hint">Сохраняется локально (LocalStorage). Столбцы: №, выражение, твой ответ, правильный, результат, время (с), метка времени, серия.</div>
+    <div class="hint">Сохраняется локально (LocalStorage).</div>
     <div style="overflow:auto">
       <table id="table">
-        <thead>
-          <tr><th>#</th><th>Выражение</th><th>Твой ответ</th><th>Правильный</th><th>Результат</th><th>Время (с)</th><th>Когда</th><th>Серия</th></tr>
-        </thead>
+        <thead><tr><th>#</th><th>Выражение</th><th>Твой ответ</th><th>Правильный</th><th>Результат</th><th>Время (с)</th><th>Когда</th><th>Серия</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
   </section>
 </div>
 
-<!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <script>
   // ===== Helpers =====
-  const $ = s => document.querySelector(s);
-  const nowISO = () => new Date().toISOString();
-  const rand = (min,max) => Math.floor(Math.random()*(max-min+1))+min;
-  const fmt = n => Number(n).toFixed(1);
-  const clamp0 = x => Math.max(0, x);
-  const parseJwt = (t)=>{ try{ return JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));}catch(e){return null;} };
+  const $=s=>document.querySelector(s);
+  const nowISO=()=>new Date().toISOString();
+  const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+  const fmt=n=>Number(n).toFixed(1);
+  const clamp0=x=>Math.max(0,x);
+
+  // Theme
+  (function(){ const saved=localStorage.getItem('mm_theme'); if(saved==='light') document.body.classList.add('light');
+    $('#theme').addEventListener('click', ()=>{ document.body.classList.toggle('light'); localStorage.setItem('mm_theme', document.body.classList.contains('light')?'light':'dark'); }); })();
 
   // ===== Levels / XP =====
-  const LVL_MAX = 100;
-  let thresholds = Array.from({length:LVL_MAX}, (_,i)=> Math.round(10000 * Math.pow(i/(LVL_MAX-1), 2)));
+  const LVL_MAX=100;
+  const thresholds=Array.from({length:LVL_MAX},(_,i)=>Math.round(10000*Math.pow(i/(LVL_MAX-1),2)));
+  function rankFor(l){ if(l>=90)return{name:'Грандмастер',i:'G'}; if(l>=70)return{name:'Гений',i:'🧠'}; if(l>=50)return{name:'Профессор',i:'P'}; if(l>=30)return{name:'Математик',i:'M'}; if(l>=20)return{name:'Исследователь',i:'R'}; if(l>=10)return{name:'Учёный',i:'U'}; return{name:'Ученик',i:'E'}; }
+  function setAvatar(l,p){ const box=$('#avatar'); box.innerHTML=''; box.textContent=rankFor(l).i; }
 
-  function rankFor(lvl){
-    if (lvl>=90) return {name:'Грандмастер', initial:'G'};
-    if (lvl>=70) return {name:'Гений', initial:'🧠'};
-    if (lvl>=50) return {name:'Профессор', initial:'P'};
-    if (lvl>=30) return {name:'Математик', initial:'M'};
-    if (lvl>=20) return {name:'Исследователь', initial:'R'};
-    if (lvl>=10) return {name:'Учёный', initial:'U'};
-    return {name:'Ученик', initial:'E'};
-  }
-  function setAvatar(lvl, profile){
-    const box = $('#avatar');
-    box.innerHTML = '';
-    if (profile?.picture){
-      const img = document.createElement('img'); img.src = profile.picture; box.appendChild(img);
-    } else {
-      const r = rankFor(lvl); box.textContent = r.initial;
-    }
-    $('#rank').textContent = '• ' + rankFor(lvl).name;
-  }
+  // ===== Unique bases (как раньше) =====
+  const combRep=(n,k)=>{let a=1,b=1; for(let i=1;i<=k;i++){a*=n+k-i; b*=i} return Math.round(a/b);};
+  const N2=90, N3=900;
+  const totals={ p2: combRep(N2,2), t222: combRep(N2,3), p3: combRep(N3,2), t333: combRep(N3,3) };
+  const keys={ p2:'mm_b_22', t222:'mm_b_222', p3:'mm_b_33', t333:'mm_b_333' };
+  const loadSet=k=>new Set(JSON.parse(localStorage.getItem(k)||'[]'));
+  const saveSet=(k,s)=>localStorage.setItem(k, JSON.stringify(Array.from(s)));
+  const key2=(a,b)=>[a,b].sort((x,y)=>x-y).join('×');
+  const key3=(a,b,c)=>[a,b,c].sort((x,y)=>x-y).join('×');
 
   // ===== State =====
-  const state = {
-    running:false,
+  const state={
+    running:false, paused:false,
     mode:'mul', level:'easy', third:'auto',
-    allowedMix: {add:true, sub:true, mul:true, div:true},
-    useBase:false,
     expr:null, result:null, hint:'',
-    timerId:null, sessionStart:0, sessionEnd:0, sessionTotal:0,
-    qStart:0, lastTime:null,
+    qStart:0, lastTime:null, nextTimer:null,
+
+    // LIVE timer
+    liveActive:false, liveAccum:0, liveRef:0, liveTick:null,
+
+    // Game timer
+    gameLimit:0, gameUnlimited:false, sessionTotal:0, sessionEnd:0, gameTick:null,
+
     streak:0, best:Number(localStorage.getItem('bestStreak')||0), total:0, correct:0,
     history: JSON.parse(localStorage.getItem('mm_history')||'[]'),
-    base:{ left:0 },
-    xp: Number(localStorage.getItem('mm_xp')||0),
-    lvl: 1,
-    lastGain: 0,
-    user: JSON.parse(localStorage.getItem('mm_user')||'null')
+    xp:Number(localStorage.getItem('mm_xp')||0), lvl:1, lastGain:0,
+
+    unique:{p2:true,t222:false,p3:false,t333:false},
+    used:{ p2:loadSet(keys.p2), t222:loadSet(keys.t222), p3:loadSet(keys.p3), t333:loadSet(keys.t333) }
   };
 
-  function recalcLevel(){
-    let l = 1;
-    for (let i=0;i<thresholds.length;i++){
-      if (state.xp >= thresholds[i]) l = i+1;
-    }
-    state.lvl = Math.min(l, LVL_MAX);
+  // ===== LIVE timer =====
+  const liveFmt = ms => { const s=Math.floor(ms/1000); const mm=String(Math.floor(s/60)).padStart(2,'0'); const ss=String(s%60).padStart(2,'0'); return `${mm}:${ss}`; };
+  function setLiveActive(active){
+    if(active && !state.liveActive){ state.liveActive=true; state.liveRef=Date.now(); }
+    else if(!active && state.liveActive){ state.liveAccum += Date.now()-state.liveRef; state.liveActive=false; }
   }
+  function startLiveTick(){
+    if(state.liveTick) clearInterval(state.liveTick);
+    state.liveTick=setInterval(()=>{
+      const ms = state.liveAccum + (state.liveActive ? (Date.now()-state.liveRef) : 0);
+      $('#live').textContent = liveFmt(ms);
+    }, 300);
+  }
+  function resetLive(){ state.liveActive=false; state.liveAccum=0; state.liveRef=0; $('#live').textContent='00:00'; }
+
+  // ===== Game timer =====
+  function renderTimer(left){
+    if(state.gameUnlimited){ $('#gameleft').textContent='∞'; $('#timerwrap').style.display='none'; return; }
+    if(state.sessionTotal<=0){ $('#gameleft').textContent='—'; $('#timerwrap').style.display='none'; return; }
+    $('#gameleft').textContent = Math.max(0, Math.ceil(left/1000)) + ' с';
+    $('#timerwrap').style.display='block';
+    const spent = Math.min(state.sessionTotal, Math.max(0, state.sessionTotal - left));
+    const pct = (spent / Math.max(1,state.sessionTotal)) * 100;
+    $('#bar').style.width = pct + '%';
+  }
+  function startGameTimer(){
+    stopGameTimer();
+    if(state.gameUnlimited){ renderTimer(0); return; }
+    if(state.gameLimit>0){
+      state.sessionTotal = state.gameLimit*1000;
+      state.sessionEnd   = Date.now() + state.sessionTotal;
+      state.gameTick = setInterval(()=>{
+        const left = Math.max(0, state.sessionEnd - Date.now());
+        renderTimer(left);
+        if(left<=0){ endSession(true); }
+      }, 200);
+    } else {
+      // лимит не задан — просто показываем «—»
+      state.sessionTotal=0; state.sessionEnd=0; renderTimer(0);
+    }
+  }
+  function stopGameTimer(){ if(state.gameTick){ clearInterval(state.gameTick); state.gameTick=null; } renderTimer(state.gameUnlimited?0:(state.sessionEnd-Date.now())); }
+
+  // ===== Level calc / UI =====
+  function recalcLevel(){ let l=1; for(let i=0;i<thresholds.length;i++){ if(state.xp>=thresholds[i]) l=i+1; } state.lvl=Math.min(l,LVL_MAX); }
   function updateLevelUI(){
     recalcLevel();
-    const lvl = state.lvl;
-    const currBase = thresholds[lvl-1];
-    const nextBase = thresholds[Math.min(lvl, LVL_MAX-1)];
-    const inLevel = clamp0(state.xp - currBase);
-    const span = Math.max(1, nextBase - currBase);
-    const pct = Math.min(100, Math.round(100 * inLevel / span));
-    $('#lvl').textContent = lvl;
-    $('#xp').textContent = Math.floor(state.xp);
-    $('#inlevel').textContent = inLevel;
-    $('#span').textContent = span;
-    $('#lvlbar').style.width = pct + '%';
-    if (state.lastGain!==0){
-      const sign = state.lastGain>0 ? '+' : '';
-      $('#xpgain').textContent = `(${sign}${state.lastGain.toFixed(2)} XP)`;
-      $('#xpgain').style.color = state.lastGain>0 ? '#d1f7d6' : '#ffe1e1';
-    } else {
-      $('#xpgain').textContent = '';
-    }
+    const lvl=state.lvl, base=thresholds[lvl-1], next=thresholds[Math.min(lvl,LVL_MAX-1)];
+    const inLvl=Math.max(0,state.xp-base), span=Math.max(1,next-base);
+    $('#lvl').textContent=lvl; $('#xp').textContent=Math.floor(state.xp);
+    $('#inlevel').textContent=inLvl; $('#span').textContent=span;
+    $('#lvlbar').style.width=Math.min(100,Math.round(100*inLvl/span))+'%';
+    $('#xpgain').textContent = state.lastGain?`(${state.lastGain>0?'+':''}${state.lastGain.toFixed(2)} XP)`:'';
     localStorage.setItem('mm_xp', String(Math.max(0,state.xp)));
-    setAvatar(lvl, state.user);
+    setAvatar(lvl);
   }
 
-  // ===== Google Sign-In =====
-  window.onGoogleSignIn = (resp)=>{
-    const prof = parseJwt(resp.credential);
-    if (prof){ state.user = {name:prof.name, email:prof.email, picture:prof.picture}; }
-    localStorage.setItem('mm_user', JSON.stringify(state.user||null));
-    updateAuthUI();
-    updateLevelUI();
-  };
-  function updateAuthUI(){
-    if (state.user){
-      $('#who').textContent = state.user.name || state.user.email || 'пользователь';
-      $('#signed').style.display = 'block';
-    } else {
-      $('#signed').style.display = 'none';
-    }
-    $('#helloUser').textContent = state.user ? `• Привет, ${state.user.name.split(' ')[0]}!` : '';
+  function updateLeft(){
+    const left22  = totals.p2   - state.used.p2.size;
+    const left222 = totals.t222 - state.used.t222.size;
+    const left33  = totals.p3   - state.used.p3.size;
+    const left333 = totals.t333 - state.used.t333.size;
+    $('#left_22').textContent=left22;  $('#left_22_s').textContent=left22;
+    $('#left_222').textContent=left222;$('#left_222_s').textContent=left222;
+    $('#left_33').textContent=left33;  $('#left_33_s').textContent=left33;
+    $('#left_333').textContent=left333;$('#left_333_s').textContent=left333;
   }
-  $('#signout')?.addEventListener('click', ()=>{
-    state.user=null; localStorage.removeItem('mm_user'); updateAuthUI(); updateLevelUI();
-  });
+  function resetAllBases(){
+    Object.values(keys).forEach(k=>localStorage.removeItem(k));
+    state.used={ p2:new Set(), t222:new Set(), p3:new Set(), t333:new Set() };
+    updateLeft();
+  }
 
-  // ===== Unique 2×2 base =====
-  function buildBase(){
-    const used = new Set(JSON.parse(localStorage.getItem('mm_base_used')||'[]'));
-    state.base.left = 4095 - used.size;
-    updateBaseLeft();
-    return used;
-  }
-  let usedPairs = buildBase();
-  function pairKey(a,b){ const [x,y]=a<=b?[a,b]:[b,a]; return `${x}x${y}`; }
-  function pickUnique2x2(){
-    if (usedPairs.size >= 4095) return null;
+  // ===== Pickers =====
+  function pickPair(digits, baseId){
+    const lo = digits===2?10:100, hi = digits===2?99:999;
+    const used = state.used[baseId], total = totals[baseId];
+    if (state.unique[baseId] && used.size>=total) return null;
     while(true){
-      const a=rand(10,99), b=rand(10,99);
-      const key = pairKey(a,b);
-      if(!usedPairs.has(key)){
-        usedPairs.add(key);
-        localStorage.setItem('mm_base_used', JSON.stringify(Array.from(usedPairs)));
-        state.base.left = 4095 - usedPairs.size;
-        updateBaseLeft();
+      const a=rand(lo,hi), b=rand(lo,hi); const k=key2(a,b);
+      if (!state.unique[baseId] || !used.has(k)){
+        if (state.unique[baseId]){ used.add(k); saveSet(keys[baseId], used); updateLeft(); }
         return [a,b];
       }
     }
   }
-  function resetBase(){ usedPairs=new Set(); localStorage.removeItem('mm_base_used'); state.base.left=4095; updateBaseLeft(); }
-  function updateBaseLeft(){ $('#baseLeft').textContent = state.base.left; $('#baseLeftBig').textContent = state.base.left; }
+  function pickTriple(digits, baseId){
+    const lo = digits===2?10:100, hi = digits===2?99:999;
+    const used = state.used[baseId], total = totals[baseId];
+    if (state.unique[baseId] && used.size>=total) return null;
+    while(true){
+      const a=rand(lo,hi), b=rand(lo,hi), c=rand(lo,hi); const k=key3(a,b,c);
+      if (!state.unique[baseId] || !used.has(k)){
+        if (state.unique[baseId]){ used.add(k); saveSet(keys[baseId], used); updateLeft(); }
+        return [a,b,c];
+      }
+    }
+  }
 
   // ===== Generators =====
   function makeAdd(level){
-    let a,b;
-    if (level==='easy'){ a=rand(10,99); b=rand(10,99); }
-    else if (level==='medium'){ a=rand(100,999); b=rand(10,99); }
-    else { a=rand(100,999); b=rand(100,999); }
-    return {expr:`${a} + ${b}`, result:a+b, hint:`Разложи на десятки/единицы: ${a} + ${b}.`};
+    let a,b; if(level==='easy'){a=rand(10,99); b=rand(10,99);}
+    else if(level==='medium'){a=rand(100,999); b=rand(10,99);} else {a=rand(100,999); b=rand(100,999);}
+    return {expr:`${a} + ${b}`, result:a+b, hint:`Разложи на десятки/единицы.`};
   }
   function makeSub(level){
-    let a,b;
-    if (level==='easy'){ a=rand(10,99); b=rand(10,99); }
-    else if (level==='medium'){ a=rand(100,999); b=rand(10,99); }
-    else { a=rand(100,999); b=rand(100,999); }
-    if (b>a) [a,b]=[b,a];
-    return {expr:`${a} − ${b}`, result:a-b, hint:`Сначала десятки, потом единицы.`};
+    let a,b; if(level==='easy'){a=rand(10,99); b=rand(10,99);}
+    else if(level==='medium'){a=rand(100,999); b=rand(10,99);} else {a=rand(100,999); b=rand(100,999);}
+    if(b>a)[a,b]=[b,a];
+    return {expr:`${a} − ${b}`, result:a-b, hint:`Сначала десятки, затем единицы.`};
   }
   function mulHint2(a,b){
     const a1=Math.floor(a/10), a2=a%10, b1=Math.floor(b/10), b2=b%10;
     return `${a} × ${b} = (${a1}0 + ${a2}) × (${b1}0 + ${b2}).`;
   }
-  function makeMul(level, thirdMode){
-    let a,b,c=null;
-    if (state.useBase && level==='easy' && (thirdMode==='off')){
-      const pair = pickUnique2x2();
-      if (!pair){ state.useBase=false; alert('База 2×2 исчерпана.'); return makeMul(level, thirdMode); }
-      [a,b]=pair;
+  function makeMul(level, third){
+    let expr, result, hint;
+    if (level==='easy'){
+      if (third==='on'){
+        const t=pickTriple(2,'t222'); if(!t){alert('База 2×2×2 исчерпана'); return null;}
+        const [a,b,c]=t; expr=`${a} × ${b} × ${c}`; result=a*b*c; hint=mulHint2(a,b)+` Перемножь пару и домножь на ${c}.`;
+      } else {
+        const p=pickPair(2,'p2'); if(!p){alert('База 2×2 исчерпана'); return null;}
+        const [a,b]=p; expr=`${a} × ${b}`; result=a*b; hint=mulHint2(a,b);
+      }
+    } else if (level==='hard'){
+      const needThird=(third==='on'||third==='auto');
+      if(needThird){
+        const t=pickTriple(3,'t333'); if(!t){alert('База 3×3×3 исчерпана'); return null;}
+        const [a,b,c]=t; expr=`${a} × ${b} × ${c}`; result=a*b*c; hint=mulHint2(a,b)+` Затем × ${c}.`;
+      } else {
+        const p=pickPair(3,'p3'); if(!p){alert('База 3×3 исчерпана'); return null;}
+        const [a,b]=p; expr=`${a} × ${b}`; result=a*b; hint=mulHint2(a,b);
+      }
     } else {
-      if (level==='easy'){ a=rand(10,99); b=rand(10,99); }
-      else if (level==='medium'){ a=rand(100,999); b=rand(10,99); }
-      else { a=rand(100,999); b=rand(100,999); }
+      const a=rand(100,999), b=rand(10,99);
+      expr=`${a} × ${b}`; result=a*b; hint=mulHint2(a,b);
     }
-    const needThird = (thirdMode==='on') || (thirdMode==='auto' && level==='hard');
-    if (needThird){ c = rand(10,99); }
-    const expr = c ? `${a} × ${b} × ${c}` : `${a} × ${b}`;
-    const result = c ? a*b*c : a*b;
-    let hint = mulHint2(a,b);
-    if (c) hint += ` Умножь удобную пару и домножь на ${c}.`;
-    return {expr, result, hint};
+    return {expr,result,hint};
   }
   function makeDiv(level){
-    let divisor, quotient;
-    if (level==='easy'){ divisor=rand(2,9); quotient=rand(10,99); }
-    else if (level==='medium'){ divisor=rand(10,99); quotient=rand(10,99); }
-    else { divisor=rand(10,99); quotient=rand(100,999); }
-    const dividend = divisor * quotient;
-    return {expr:`${dividend} ÷ ${divisor}`, result:quotient, hint:`Подели по разрядам: получится ${quotient}.`};
+    let d,q; if(level==='easy'){d=rand(2,9); q=rand(10,99);}
+    else if(level==='medium'){d=rand(10,99); q=rand(10,99);} else {d=rand(10,99); q=rand(100,999);}
+    const n=d*q; return {expr:`${n} ÷ ${d}`, result:q, hint:`Подели по разрядам.`};
   }
-  function makeMixed(level, thirdMode){
-    const pool=[];
-    if (state.allowedMix.add) pool.push('add');
-    if (state.allowedMix.sub) pool.push('sub');
-    if (state.allowedMix.mul) pool.push('mul');
-    if (state.allowedMix.div) pool.push('div');
-    if (pool.length===0) pool.push('add');
-    const op = pool[Math.floor(Math.random()*pool.length)];
-    if (op==='add') return makeAdd(level);
-    if (op==='sub') return makeSub(level);
-    if (op==='mul') return makeMul(level, thirdMode);
+  function makeMixed(level, third){
+    const pool=['add','sub','mul','div']; const op=pool[Math.floor(Math.random()*pool.length)];
+    if(op==='add') return makeAdd(level);
+    if(op==='sub') return makeSub(level);
+    if(op==='mul') return makeMul(level, third);
     return makeDiv(level);
   }
   function makeCustom(){
-    const a = Number($('#c-a').value);
-    const b = Number($('#c-b').value);
-    const c = ($('#c-op2').value==='none') ? null : Number($('#c-c').value);
-    const op1 = $('#c-op1').value; const op2 = $('#c-op2').value;
-    if (!Number.isFinite(a) || !Number.isFinite(b) || (op2!=='none' && !Number.isFinite(c))) {
-      alert('Заполни числа для своей задачи'); return null;
-    }
-    const s = (o)=> o==='*'?'×':(o==='/'?'÷':(o==='-'?'−':'+'));
-    const expr = `${a} ${s(op1)} ${b}` + (op2==='none' ? '' : ` ${s(op2)} ${c}`);
-    const manual = $('#c-result').value.trim();
-    let result;
-    if (manual !== '' && Number.isFinite(Number(manual))) {
-      result = Number(manual);
-    } else {
-      const f=(x,o,y)=> o==='*'? x*y : o==='/'? x/y : o==='-'? x-y : x+y;
-      result = (op2==='none') ? f(a,op1,b) : f(f(a,op1,b), op2, c);
-    }
-    return {expr, result, hint:'Решай слева направо (как задано).'};
+    const a=Number($('#c-a').value), b=Number($('#c-b').value);
+    const c=$('#c-op2').value==='none'?null:Number($('#c-c').value);
+    const op1=$('#c-op1').value, op2=$('#c-op2').value;
+    if(!Number.isFinite(a)||!Number.isFinite(b)||(op2!=='none'&&!Number.isFinite(c))){alert('Заполни числа'); return null;}
+    const s=o=>o==='*'?'×':o==='/'?'÷':o==='-'?'−':'+';
+    const f=(x,o,y)=>o==='*'?x*y:o==='/'?x/y:o==='-'?x-y:x+y;
+    const expr=`${a} ${s(op1)} ${b}`+(op2==='none'?'':` ${s(op2)} ${c}`);
+    const manual=$('#c-result').value.trim();
+    const result=manual!==''&&Number.isFinite(Number(manual))?Number(manual):(op2==='none'?f(a,op1,b):f(f(a,op1,b),op2,c));
+    return {expr,result,hint:'Решай слева направо (как задано).'};
   }
 
-  // ===== Session / Timer (elapsed + left) =====
-  function setRunning(r){ state.running = r; }
-  function renderTimer(left, total){
-    const elapsed = total ? total - Math.max(0, left) : (state.running ? Math.floor(performance.now() - state.sessionStart) : 0);
-    $('#timeleft').textContent = total ? Math.max(0,Math.ceil(left/1000)) + ' с' : '—';
-    $('#bar').style.width = total ? (100 * (1 - left/total)) + '%' : '0%';
-    const toMMSS = ms => { const s=Math.max(0,Math.ceil(ms/1000)); const mm=String(Math.floor(s/60)).padStart(2,'0'); const ss=String(s%60).padStart(2,'0'); return mm+':'+ss; };
-    $('#timerDigits').textContent = total ? toMMSS(left) : '00:00';
-    $('#elapsedDigits').textContent = toMMSS(elapsed);
-  }
-  function startSession(){
-    const secs = Number($('#timelimit').value)||0;
-    state.sessionTotal = secs*1000;
-    state.sessionStart = performance.now();
-    state.sessionEnd = state.sessionStart + state.sessionTotal;
-    if (state.timerId) clearInterval(state.timerId);
-    if (secs>0){
-      state.timerId = setInterval(()=>{
-        const now = performance.now();
-        const left = Math.max(0, state.sessionEnd - now);
-        renderTimer(left, state.sessionTotal);
-        if (left<=0){ stopSession(true); }
-      }, 100);
-    } else {
-      renderTimer(0,0);
-    }
+  // ===== Session control =====
+  function start(){
+    state.streak=0; state.total=0; state.correct=0; updateStats();
+
+    // приоритет быстрого поля рядом с кнопками
+    const quick = Number($('#quickLimit').value||0);
+    state.gameLimit     = Number.isFinite(quick)&&quick>0 ? quick : 0;
+    state.gameUnlimited = $('#unlimited').checked;
+
+    state.paused=false; $('#pause').textContent='Пауза';
     setRunning(true);
+    startGameTimer();
+    newTask();
   }
-  function pauseSession(){
-    if (!state.running) return;
-    if (state.timerId){
-      clearInterval(state.timerId); state.timerId=null; $('#pause').textContent='Продолжить';
-    } else {
-      const leftText = $('#timeleft').textContent;
-      const left = (/\d+/.test(leftText)) ? parseInt(leftText)*1000 : 0;
-      state.sessionEnd = performance.now() + left;
-      if (state.sessionTotal){
-        state.timerId = setInterval(()=>{
-          const now = performance.now();
-          const l = Math.max(0, state.sessionEnd - now);
-          renderTimer(l, state.sessionTotal);
-          if (l<=0){ stopSession(true); }
-        }, 100);
+  function setRunning(r){
+    state.running=r;
+    if(r){ resetLive(); startLiveTick(); }
+    else { setLiveActive(false); }
+  }
+  function pauseResume(){
+    if(!state.running) return;
+    state.paused=!state.paused;
+    if(state.paused){
+      setLiveActive(false);
+      if(state.gameTick){ clearInterval(state.gameTick); state.gameTick=null; }
+      $('#pause').textContent='Продолжить'; $('#feedback').textContent='Пауза';
+    }else{
+      if(!state.gameUnlimited && state.sessionTotal>0){
+        const left = Math.max(0, state.sessionEnd - Date.now());
+        state.sessionEnd = Date.now() + left;
+        startGameTimer();
       }
-      $('#pause').textContent='Пауза';
+      $('#pause').textContent='Пауза'; $('#feedback').textContent='';
+      setLiveActive(true);
     }
   }
-  function stopSession(timeout=false){
-    if (!state.running && !state.timerId) return;
+  function endSession(timeout=false){
     setRunning(false);
-    if (state.timerId) clearInterval(state.timerId); state.timerId=null;
-    if (timeout){ $('#feedback').textContent='Время вышло!'; $('#feedback').className='feedback bad'; }
-    $('#task').textContent='Сессия завершена.';
-    renderTimer(state.sessionTotal, state.sessionTotal); // показываем 00:00 и итог прошедшего
+    if(state.gameTick){ clearInterval(state.gameTick); state.gameTick=null; }
+    $('#feedback').textContent = timeout ? 'Время вышло! Сессия завершена.' : 'Сессия завершена.';
+    $('#feedback').className = timeout ? 'feedback bad' : 'feedback';
+    renderTimer(0);
   }
 
   function newTask(){
-    if (!state.running){ $('#feedback').textContent='Нажми «Старт», чтобы начать.'; $('#feedback').className='feedback'; return; }
+    if(!state.running){ $('#feedback').textContent='Нажми «Старт», чтобы начать.'; $('#feedback').className='feedback'; return; }
+    if(state.paused){ pauseResume(); }
     let pack;
-    if (state.mode==='add') pack = makeAdd(state.level);
-    else if (state.mode==='sub') pack = makeSub(state.level);
-    else if (state.mode==='mul') pack = makeMul(state.level, state.third);
-    else if (state.mode==='div') pack = makeDiv(state.level);
-    else if (state.mode==='mix') pack = makeMixed(state.level, state.third);
-    else pack = makeCustom();
-    if (!pack) return;
-    state.expr = pack.expr; state.result = pack.result; state.hint = pack.hint;
-    $('#task').textContent = pack.expr;
-    $('#explain').textContent = pack.hint;
+    if(state.mode==='add') pack=makeAdd(state.level);
+    else if(state.mode==='sub') pack=makeSub(state.level);
+    else if(state.mode==='mul') pack=makeMul(state.level, state.third);
+    else if(state.mode==='div') pack=makeDiv(state.level);
+    else if(state.mode==='mix') pack=makeMixed(state.level, state.third);
+    else pack=makeCustom();
+    if(!pack) return;
+    state.expr=pack.expr; state.result=pack.result; state.hint=pack.hint;
+    $('#task').textContent=pack.expr; $('#explain').textContent=pack.hint;
     $('#answer').value=''; $('#feedback').textContent=''; $('#xpgain').textContent='';
+    if(state.nextTimer){ clearTimeout(state.nextTimer); state.nextTimer=null; }
     $('#answer').focus();
-    state.qStart = performance.now();
+    state.qStart=performance.now();
+    setLiveActive(true);
   }
 
   // ===== Stats / History =====
   function updateStats(){
-    $('#streak').textContent = state.streak;
-    $('#best').textContent = state.best;
-    $('#total').textContent = state.total;
-    $('#correct').textContent = state.correct;
-    const acc = state.total ? Math.round(100 * state.correct / state.total) : 0;
-    $('#acc').textContent = acc + '%';
-    const avg = state.history.length ? (state.history.reduce((s,h)=>s+h.time,0)/state.history.length) : 0;
-    $('#avg').textContent = fmt(avg/1000);
-    $('#lastTime').textContent = state.lastTime!=null ? fmt(state.lastTime/1000) : '—';
+    $('#streak').textContent=state.streak; $('#best').textContent=state.best;
+    $('#total').textContent=state.total; $('#correct').textContent=state.correct;
+    const acc=state.total?Math.round(100*state.correct/state.total):0; $('#acc').textContent=acc+'%';
+    const avg=state.history.length?(state.history.reduce((s,h)=>s+h.time,0)/state.history.length):0;
+    $('#avg').textContent=fmt(avg/1000); $('#lastTime').textContent=state.lastTime!=null?fmt(state.lastTime/1000):'—';
   }
   function pushHistory(entry){
-    state.history.push(entry);
-    localStorage.setItem('mm_history', JSON.stringify(state.history));
-    const tbody = $('#table tbody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${state.history.length}</td><td class="mono">${entry.expr}</td><td>${entry.given}</td><td>${entry.correctVal}</td><td>${entry.ok?'✓':'✗'}</td><td>${fmt(entry.time/1000)}</td><td class="nowrap">${entry.ts}</td><td>${entry.streak}</td>`;
-    tbody.appendChild(tr);
+    state.history.push(entry); localStorage.setItem('mm_history', JSON.stringify(state.history));
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${state.history.length}</td><td class="mono">${entry.expr}</td><td>${entry.given}</td><td>${entry.correctVal}</td><td>${entry.ok?'✓':'✗'}</td><td>${fmt(entry.time/1000)}</td><td class="nowrap">${entry.ts}</td><td>${entry.streak}</td>`;
+    $('#table tbody').appendChild(tr);
   }
   function rebuildTable(){
-    const tbody = $('#table tbody'); tbody.innerHTML='';
+    const tbody=$('#table tbody'); tbody.innerHTML='';
     state.history.forEach((h,i)=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${i+1}</td><td class="mono">${h.expr}</td><td>${h.given}</td><td>${h.correctVal}</td><td>${h.ok?'✓':'✗'}</td><td>${fmt(h.time/1000)}</td><td class="nowrap">${h.ts}</td><td>${h.streak}</td>`;
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${i+1}</td><td class="mono">${h.expr}</td><td>${h.given}</td><td>${h.correctVal}</td><td>${h.ok?'✓':'✗'}</td><td>${fmt(h.time/1000)}</td><td class="nowrap">${h.ts}</td><td>${h.streak}</td>`;
       tbody.appendChild(tr);
     });
   }
 
-  // ===== Check (XP/серия только при running) =====
+  // ===== Check =====
   function check(){
-    if (!state.running){
-      $('#feedback').textContent='Сессия не запущена. Нажми «Старт».';
-      $('#feedback').className='feedback bad';
-      return;
-    }
-    if (state.result==null){ $('#feedback').textContent='Сформируй задачу (кнопка «Следующая»).'; $('#feedback').className='feedback bad'; return; }
-    const raw = $('#answer').value.trim();
-    if (raw===''){ $('#feedback').textContent='Поле «Ответ» пустое.'; $('#feedback').className='feedback bad'; return; }
-    const val = Number(raw);
-    if (!Number.isFinite(val)){ $('#feedback').textContent='Введи число.'; $('#feedback').className='feedback bad'; return; }
+    if(!state.running){ $('#feedback').textContent='Сессия не запущена.'; $('#feedback').className='feedback bad'; return; }
+    if(state.result==null){ $('#feedback').textContent='Сначала сформируй задачу («Следующая»).'; $('#feedback').className='feedback bad'; return; }
+    const raw=$('#answer').value.trim(); if(raw===''){ $('#feedback').textContent='Поле «Ответ» пустое.'; $('#feedback').className='feedback bad'; return; }
+    const val=Number(raw); if(!Number.isFinite(val)){ $('#feedback').textContent='Введи число.'; $('#feedback').className='feedback bad'; return; }
 
-    const qTime = performance.now() - state.qStart; state.lastTime = qTime;
-    state.total++;
-    const ok = (val === state.result);
-    if (ok){
-      state.correct++; state.streak++;
-      state.best = Math.max(state.best, state.streak);
-      localStorage.setItem('bestStreak', String(state.best));
-      $('#feedback').textContent = 'Верно!'; $('#feedback').className = 'feedback good';
-      const gain = 1 * (1 + 0.01 * state.streak);
-      state.xp = clamp0(state.xp + gain);
-      state.lastGain = gain;
+    const qTime=performance.now()-state.qStart; state.lastTime=qTime; state.total++;
+    setLiveActive(false);
+
+    const ok=(val===state.result);
+    if(ok){
+      state.correct++; state.streak++; state.best=Math.max(state.best,state.streak); localStorage.setItem('bestStreak',String(state.best));
+      $('#feedback').textContent='Верно!'; $('#feedback').className='feedback good';
+      const gain=1*(1+0.01*state.streak); state.xp=clamp0(state.xp+gain); state.lastGain=gain; updateLevelUI();
+      if(state.nextTimer) clearTimeout(state.nextTimer);
+      state.nextTimer=setTimeout(()=>{ newTask(); }, 1000);
     } else {
-      state.streak = 0;
-      $('#feedback').textContent = `Неверно. Правильный: ${state.result}`; $('#feedback').className = 'feedback bad';
-      state.xp = clamp0(state.xp - 2);
-      state.lastGain = -2;
+      state.streak=0; $('#feedback').textContent=`Неверно. Правильный: ${state.result}`; $('#feedback').className='feedback bad';
+      state.xp=clamp0(state.xp-2); state.lastGain=-2; updateLevelUI();
     }
-    pushHistory({expr:state.expr, given:val, correctVal:state.result, ok, time:qTime, ts:nowISO(), streak:state.streak});
+    pushHistory({expr:state.expr,given:val,correctVal:state.result,ok,time:qTime,ts:nowISO(),streak:state.streak});
     updateStats();
-    updateLevelUI();
   }
 
   // ===== Events =====
   document.querySelectorAll('[data-mode]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('[data-mode]').forEach(b=>b.classList.remove('primary'));
-      btn.classList.add('primary');
-      state.mode = btn.dataset.mode;
-      $('#custom-box').style.display = (state.mode==='custom') ? 'block' : 'none';
-      $('#mix-ops').style.display = (state.mode==='mix') ? 'block' : 'none';
+      btn.classList.add('primary'); state.mode=btn.dataset.mode;
+      $('#custom-box').style.display=(state.mode==='custom')?'block':'none';
     });
   });
-  $('#level').addEventListener('change', e=> state.level = e.target.value);
-  ['m-add','m-sub','m-mul','m-div'].forEach(id=>{
-    $('#'+id).addEventListener('change', ()=>{
-      state.allowedMix.add = $('#m-add').checked;
-      state.allowedMix.sub = $('#m-sub').checked;
-      state.allowedMix.mul = $('#m-mul').checked;
-      state.allowedMix.div = $('#m-div').checked;
+  $('#level').addEventListener('change',e=>state.level=e.target.value);
+  $('#third').addEventListener('change',e=>state.third=e.target.value);
+  ['u22','u222','u33','u333'].forEach(id=>{
+    $('#'+id).addEventListener('change',()=>{
+      state.unique.p2=$('#u22').checked; state.unique.t222=$('#u222').checked;
+      state.unique.p3=$('#u33').checked; state.unique.t333=$('#u333').checked;
     });
   });
-  $('#useBase').addEventListener('click', ()=>{ state.useBase = !state.useBase; $('#useBase').classList.toggle('primary', state.useBase); });
-  $('#resetBase').addEventListener('click', ()=>{ if (confirm('Сбросить прогресс уникальных 2×2?')) resetBase(); });
+  $('#resetBases').addEventListener('click', ()=>{ if(confirm('Сбросить все уникальные базы?')) resetAllBases(); });
 
-  $('#c-use').addEventListener('click', ()=>{ if (!state.running) startSession(); newTask(); });
-
-  $('#start').addEventListener('click', ()=>{
-    state.streak=0; state.total=0; state.correct=0; updateStats();
-    startSession(); newTask();
-  });
-  $('#pause').addEventListener('click', ()=> pauseSession());
-  $('#stop').addEventListener('click', ()=> stopSession(false));
+  $('#c-use').addEventListener('click', ()=>{ if(!state.running) start(); newTask(); });
+  $('#start').addEventListener('click', start);
   $('#next').addEventListener('click', ()=> newTask());
   $('#check').addEventListener('click', check);
+  $('#pause').addEventListener('click', pauseResume);
+  $('#stop').addEventListener('click', ()=> endSession(false));
   $('#clear').addEventListener('click', ()=> $('#answer').value='');
-  $('#hint').addEventListener('click', ()=> $('#work').open = true);
+  $('#hint').addEventListener('click', ()=> $('#work').open=true);
 
-  // Хоткеи работают только в активной сессии
-  function nextHotkey(e){
-    if (!state.running) return;
-    if ((e.key==='Enter' && (e.ctrlKey||e.metaKey)) || e.code==='Space' || e.key===' '){
-      e.preventDefault(); newTask();
-    }
-  }
+  // Хоткеи
   $('#answer').addEventListener('keydown', e=>{
-    if (!state.running) return;
-    if (e.key==='Enter' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); check(); return; }
-    nextHotkey(e);
+    if(!state.running) return;
+    if(e.key==='Enter'){ e.preventDefault(); check(); return; }
+    if(e.code==='Space'||e.key===' '){ e.preventDefault(); newTask(); }
   });
   document.addEventListener('keydown', e=>{
-    if (!state.running) return;
-    if (e.key==='Enter' && (e.ctrlKey||e.metaKey)) { e.preventDefault(); newTask(); return; }
-    if (e.code==='Space' || e.key===' ') { e.preventDefault(); newTask(); }
+    if(!state.running) return;
+    if(e.code==='Space'||e.key===' '){ e.preventDefault(); newTask(); }
   });
 
   // Export / history
   function toCSV(rows){ return rows.map(r=>[r.expr,r.given,r.correctVal,r.ok?'ok':'wrong',fmt(r.time/1000),r.ts,r.streak].join(',')).join('\n'); }
   $('#exportCsv').addEventListener('click', ()=>{
-    const csv = 'expr,given,correct,result,time_s,ts,streak\n' + toCSV(state.history);
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'history.csv'; a.click(); URL.revokeObjectURL(url);
+    const csv='expr,given,correct,result,time_s,ts,streak\n'+toCSV(state.history);
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download='history.csv'; a.click(); URL.revokeObjectURL(url);
   });
   $('#clearHistory').addEventListener('click', ()=>{ if(confirm('Очистить историю?')){ state.history=[]; localStorage.removeItem('mm_history'); rebuildTable(); updateStats(); }});
 
-  // Initial
+  // ===== Init =====
   (function init(){
     document.getElementById('mode-mul').classList.add('primary');
-    rebuildTable(); updateStats(); updateBaseLeft();
-    recalcLevel(); updateLevelUI();
-    renderTimer(0,0);
-    updateAuthUI();
+    rebuildTable(); updateStats(); updateLeft(); updateLevelUI();
+    $('#live').textContent='00:00'; $('#gameleft').textContent='—'; $('#timerwrap').style.display='none';
   })();
 </script>
 </body>
